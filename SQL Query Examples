@@ -1,0 +1,198 @@
+#Select Statements Practice
+
+SELECT * #The asterisk stands for ALL
+FROM Customer_Data.Customer_Data #Command phrase will always be CAPITALIZED
+
+SELECT Customer_ID, Gender, Income #To run a different command, highlight it specifically or just create new query
+FROM Customer_Data.Customer_Data
+
+SELECT Customer_ID, Gender, Income, Age #List of Columns
+From `Customer_Data.Customer_Data` #Dataset.Table
+
+SELECT Post_ID, Post_Type, num_reactions
+FROM Customer_Data.Facebook_Posts
+
+SELECT id, price, sale
+FROM `Customer_Data.Sales_Pricing_Data`
+
+
+--Select/Distinct Functions
+
+SELECT DISTINCT Gender, Age #Only shows the distinct values of gender and age
+FROM `Customer_Data.Customer_Data` -- Double Dash works for notes too!
+
+SELECT DISTINCT Electronic_Consumer_Type
+FROM `Customer_Data.Customer_Data`
+
+-- Select/Limit
+
+SELECT *
+FROM `Customer_Data.Customer_Data`
+LIMIT 50
+
+SELECT Weekend, Purchase, Region
+FROM `Customer_Data.transactions`
+ORDER BY Region ASC
+LIMIT
+
+--Sorting // Order can matter
+
+SELECT *
+FROM `Customer_Data.Customer_Data`
+ORDER BY Age ASC, Income DESC
+
+SELECT DISTINCT Region, Time_On_Site, VisitorType
+FROM `Customer_Data.transactions`
+ORDER BY Region ASC, Time_On_Site DESC, VisitorType ASC
+
+SELECT Age, Gender, Income
+FROM `Customer_Data.Customer_Data`
+ORDER BY Income ASC, Age DESC
+
+-- Filtering & Where Statements
+SELECT *
+FROM `Customer_Data.Sales_Pricing_Data`
+WHERE Price >100
+
+
+-- In-Class Exercise
+#Top 5 Customers with Highest Income
+SELECT Customer_ID, Income
+FROM `Customer_Data.Customer_Data`
+ORDER BY Income DESC
+LIMIT 5
+
+#Youngest 10 Customers
+SELECT Customer_ID, Age
+FROM `Customer_Data.Customer_Data`
+ORDER BY Age ASC
+Limit 10
+
+#Top 5 FB Posts with the highest posts with the most reactions
+SELECT *
+FROM `Customer_Data.Facebook_Posts`
+ORDER BY num_reactions DESC
+LIMIT 5
+
+SELECT post_id, num_reactions
+FROM `Customer_Data.Facebook_Posts`
+ORDER BY num_reactions DESC
+LIMIT 5
+
+#Top 8 Transactions which had the longest time & from Midwest (region)
+SELECT *
+FROM `Customer_Data.transactions`
+WHERE region = 'Midwest'
+ORDER BY Time_On_Site DESC #Order by goes after Where
+LIMIT 8 #Limit goes after Order by
+
+#1 Sort ascending instead of descending
+SELECT *
+FROM `Customer_Data.Customer_Data`
+ORDER BY Income ASC
+
+#2 Price less than 500
+SELECT *
+FROM `Customer_Data.Sales_Pricing_Data`
+WHERE Price <500
+
+#5 Sort based on brand ASC, price DESC, top catepgory ASC
+SELECT *
+FROM `Customer_Data.Sales_Pricing_Data`
+ORDER BY Brand ASC, Price DESC, Top_Category ASC
+
+#Brand is JBL, order by merchant & top category 
+SELECT *
+FROM `Customer_Data.Sales_Pricing_Data`
+WHERE Brand ='JBL'
+ORDER BY Merchant ASC, Price DESC, Top_Category ASC
+
+
+#When sorting by alphabetical letters, it sorts capital first before lowercase.
+
+-- AND/OR Statements
+SELECT *
+FROM `Customer_Data.Sales_Pricing_Data`
+WHERE Brand ='JBL'
+AND Merchant <> 'Walmart.com' # <> means doesnt equal
+ORDER BY Brand ASC, Price DESC, Top_Category ASC
+
+# =,<,>,<=, >=
+# <> or != (Does not equal)
+
+
+-- Filtering with Between
+SELECT *
+FROM `Customer_Data.Customer_Data`
+WHERE Price BETWEEN 100 and 1000
+
+-- Two Condition Filtering and Sorting
+SELECT *
+FROM `Customer_Data.Sales_Pricing_Data`
+WHERE (Brand ='Samsung') AND (Price>1000)
+ORDER BY Price DESC
+LIMIT 400
+
+#PEMDAS: When writing code, you have to also be aware of what is being ran first (everything after it gets affected)
+
+#Boolean and Filtering 
+SELECT *
+FROM `Customer_Data.Sales_Pricing_Data`
+WHERE (Brand='Samsung') AND (Merchant ='')
+
+--OR/IN Statements - both function works the same. IN is shorter
+SELECT *
+FROM `Customer_Data.Sales_Pricing_Data`
+WHERE Brand IN ('Samsung', 'LG','JVC')
+
+SELECT *
+FROM `Customer_Data.Sales_Pricing_Data`
+WHERE (Brand='Samsung') OR (Brand='LG') OR (Brand='JVC')
+
+#Brand is samsung or lv, between $50-200, sales=true, brand ASC, Price DESC
+SELECT *
+FROM `Customer_Data.Sales_Pricing_Data`
+WHERE (Brand IN ('Samsung', 'LG'))
+AND (Price BETWEEN 50 AND 200)
+AND (sale =true)
+ORDER BY Brand ASC, Price DESC
+
+#Try previous with brands that are not Samsung or LG 
+-- Using NOT with IN
+SELECT * 
+FROM `Customer_Data.Sales_Pricing_Data`
+WHERE (NOT Brand In('Samsung', 'LG'))
+AND (Price BETWEEN 50 AND 200)
+AND (sale =true)
+ORDER BY Brand ASC, Price DESC
+
+#More AND Statements
+SELECT *
+FROM `Customer_Data.transactions`
+WHERE (Region in ('South Central', 'Midwest'))
+AND (VisitorType ='Returning')
+AND (Purchase =false)
+AND (Weekend =false)
+AND (Time_On_Site >=15)
+ORDER BY Region DESC, Time_On_Site DESC
+
+SELECT *
+FROM `Customer_Data.transactions`
+WHERE (NOT Region in ('South Central', 'Midwest'))
+AND (VisitorType ='Returning')
+AND (Purchase =false)
+AND (Weekend =false)
+AND (Time_On_Site >=5)
+ORDER BY Region DESC, Time_On_Site DESC
+
+-- UPPER/LOWER case
+
+SELECT *
+FROM `Customer_Data.transactions`
+WHERE UPPER(Region) in ("MIDWEST", "SOUTH CENTRAL")
+
+--INNER JOIN - Aggregating
+SELECT *
+FROM `Customer_Data.transactions`a JOIN `Customer_Data.Customer_Data`b
+on a.Customer_ID=b.Customer_ID
+LIMIT 200;
