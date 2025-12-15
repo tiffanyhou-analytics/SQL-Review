@@ -1,0 +1,105 @@
+#FB reactions
+SELECT post_type, 
+SUM (num_reactions) ReactionsCount, 
+COUNT (num_loves + num_wows) GreatReactions
+FROM `Customer_Data.Facebook_Posts`
+GROUP BY post_type
+ORDER BY GreatReactions DESC, ReactionsCount DESC
+
+-- HAVING statements: filters data after aggregation
+SELECT Product_ID, AVG (Time_On_Site) AvgTime #aggregration
+FROM `Customer_Data.transactions`
+GROUP By Product_ID
+HAVING AvgTime >100
+
+-- WHERE & HAVING Statements
+SELECT Product_ID, AVG (Time_On_Site) AvgTime
+FROM `Customer_Data.transactions`
+WHERE Time_On_Site > 10 AND (Product_ID >150) #Where > Group By > Having > Order By(Sorting)
+GROUP By Product_ID
+HAVING AvgTime > 100 #applied to aggregated values
+ORDER BY Product_ID
+
+#Practice 
+SELECT AVG(Income), Industry
+FROM IncomeTable
+WHERE Income >100000
+
+SELECT DISTINCT Industry, AVG(Income) AvgHighIncome
+FROM IncomeTable
+WHERE Income >100000 
+GROUP BY Industry
+ORDER BY AvgHighIncome DESC
+
+-- JOINING & AGGREGATION Practice
+SELECT *
+FROM `Customer_Data.transactions`a 
+JOIN `Customer_Data.Customer_Data`b
+ON a.Customer_ID=b.Customer_ID
+LIMIT 200;
+
+SELECT a.Customer_ID, COUNT (b.Product_ID) noTransactions
+FROM `Customer_Data.Customer_Data` a 
+JOIN `Customer_Data.transactions` b 
+ON a.Customer_ID = b.Customer_ID 
+GROUP BY a.Customer_ID
+
+SELECT a.Customer_ID, (SUM(b.Time_On_Site) TimeSpent)
+FROM `Customer_Data.Customer_Data`a 
+JOIN `Customer_Data.transactions`b
+ON a.Customer_ID = b.Customer_ID
+GROUP BY b.TimeSpent
+
+SELECT *
+FROM `Customer_Data.transactions`a JOIN `Customer_Data.ProductID_SalesID_Lookup`b
+  ON a.Product_ID=b.Product_ID
+  JOIN `Customer_Data.Sales_Pricing_Data`c 
+  ON b.id=c.id
+
+SELECT purchase, weekend, visitortype,
+  COUNT(*) AS transactions,
+  SUM(price) AS price
+FROM `Customer_Data.transactions`a JOIN `Customer_Data.ProductID_SalesID_Lookup`b
+  ON a.product_id = b.Product_ID
+JOIN `Customer_Data.Sales_Pricing_Data`c
+  ON b.id = c.id
+  GROUP BY 1,2,3
+
+SELECT a.Date, a.Customer_ID, a.weekend, a.Region, c.id, c.price, c.sale, c.Merchant
+FROM `Customer_Data.transactions`a
+JOIN `Customer_Data.ProductID_SalesID_Lookup`b
+  ON a.product_id=b.Product_ID
+JOIN `Customer_Data.Sales_Pricing_Data`c
+ON b.id=c.id
+
+SELECT Product_ID, AVG(Time_On_Site)AvgTime
+FROM `Customer_Data.Customer_Data`a
+JOIN `Customer_Data.transactions`b
+ON a.Customer_ID=b.Customer_ID
+ORDER BY a.Customer_ID
+
+SELECT *
+FROM `Customer_Data.Customer_Data`
+ORDER BY Customer_ID
+
+--LEFT JOINS
+SELECT *
+FROM `Customer_Data.Customer_Data`a
+LEFT JOIN `Customer_Data.transactions`b
+ON a.Customer_ID=b.Customer_ID
+ORDER BY a.Customer_ID
+
+#Inner joins only return records that exist in both tables. The default. 
+#Outer will display records that do not have a counterpart in the other table
+#Right, Left & Full dictate how much of the data to keep 
+#Left -> keep all data from the first table, (customers who had a transaction and didnt have a trans)
+#Right -> keep all data from the second table 
+#Full ->  keep all data from both tables
+
+#Amazon Example
+SELECT ProductID, Description, Image, AVG(b.Ratings) AvgRating, COUNT(ProductID)
+FROM 'Products'a LEFT JOIN 'Reviews'b
+ON a.ProductID=b.ProductID 
+GROUP BY 1,2,3
+HAVING AvgRatings>4
+ORDER BY AvgRatings DESC
